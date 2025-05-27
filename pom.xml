@@ -30,6 +30,11 @@
       <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.github.albfernandez</groupId>
+      <artifactId>juniversalchardet</artifactId>
+      <version>2.4.0</version>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -43,4 +48,19 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>21</source>
+          <target>21</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
