@@ -1,5 +1,7 @@
 package org.scd.day01;
 
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
@@ -8,6 +10,7 @@ import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +29,9 @@ public class StreamChatModelDemo {
                 .build();
 
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
-        model.chat("你好,你是谁?", new StreamingChatResponseHandler() {
+        SystemMessage systemMessage = new SystemMessage("因中文流式输出会乱码,请输出英文");
+        UserMessage userMessage = new UserMessage("你好,你是谁?");
+        model.chat(Arrays.asList(systemMessage, userMessage), new StreamingChatResponseHandler() {
 
             @Override
             public void onPartialResponse(String partialResponse) {
