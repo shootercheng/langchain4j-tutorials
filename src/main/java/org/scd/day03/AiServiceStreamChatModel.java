@@ -14,13 +14,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.scd.common.Constant.OPENAI_API_KEY;
+import static org.scd.common.Constant.OPENAI_BASE_URL;
+
 public class AiServiceStreamChatModel {
     private static final Logger LOGGER = LoggerFactory.getLogger(AiServiceStreamChatModel.class);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
         StreamingChatModel model = OpenAiStreamingChatModel.builder()
-                .baseUrl("http://langchain4j.dev/demo/openai/v1")
-                .apiKey("demo")
+                .baseUrl(OPENAI_BASE_URL)
+                .apiKey(OPENAI_API_KEY)
                 .modelName(OpenAiChatModelName.GPT_4_O_MINI)
                 .logRequests(true)
                 .logResponses(true)

@@ -6,6 +6,7 @@ import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.output.Response;
 
@@ -24,7 +25,7 @@ public class StoreDocument {
         List<Document> documents = loadDocuments(toPath("documents/"), glob("*.txt"));
         DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
         List<TextSegment> segments = splitter.splitAll(documents);
-        AllMiniLmL6V2EmbeddingModel allMiniLmL6V2EmbeddingModel = new AllMiniLmL6V2EmbeddingModel();
+        EmbeddingModel allMiniLmL6V2EmbeddingModel = new AllMiniLmL6V2EmbeddingModel();
         Response<List<Embedding>> listResponse = allMiniLmL6V2EmbeddingModel.embedAll(segments);
         DuckDBEmbeddingStore embeddingStore = DuckDBEmbeddingStore.builder()
                 .filePath(DUCKDB_PATH)
