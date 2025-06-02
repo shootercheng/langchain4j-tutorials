@@ -9,13 +9,16 @@ import org.scd.day03.Assistant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.scd.common.Constant.OPENAI_API_KEY;
+import static org.scd.common.Constant.OPENAI_BASE_URL;
+
 public class ChatWithTool {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatWithTool.class);
 
     public static void main(String[] args) {
         OpenAiChatModel model = OpenAiChatModel.builder()
-                .baseUrl("http://langchain4j.dev/demo/openai/v1")
-                .apiKey("demo")
+                .baseUrl(OPENAI_BASE_URL)
+                .apiKey(OPENAI_API_KEY)
                 .modelName(OpenAiChatModelName.GPT_4_O_MINI)
                 .logRequests(true)
                 .logResponses(true)

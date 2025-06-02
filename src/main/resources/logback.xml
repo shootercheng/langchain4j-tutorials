@@ -6,6 +6,7 @@
     </appender>
 
     <logger name="dev.langchain4j.model.openai" level="DEBUG" />
+    <logger name="dev.langchain4j.store" level="DEBUG" />
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>

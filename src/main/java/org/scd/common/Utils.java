@@ -2,15 +2,17 @@ package org.scd.common;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.Scanner;
-
-import static dev.langchain4j.internal.Utils.getOrDefault;
 
 public class Utils {
 
@@ -45,5 +47,15 @@ public class Utils {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Properties loadPropertiesByPath(String filePath) {
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return properties;
     }
 }

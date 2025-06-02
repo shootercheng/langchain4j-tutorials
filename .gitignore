@@ -40,3 +40,4 @@ build/
 
 *.duck
 *.wal
+*.db

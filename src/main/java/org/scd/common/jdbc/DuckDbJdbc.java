@@ -1,4 +1,4 @@
-package org.scd.day04.jdbc;
+package org.scd.common.jdbc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -12,4 +12,6 @@ public class Constant {
             "rag.duck");
 
     public static final String TEXT_TABLE_NAME = "t_text_document";
+
+    public static final String MODEL_CONFIG_PATH = "/config/langchain4j/model.properties";
 }
