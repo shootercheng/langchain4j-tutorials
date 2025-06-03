@@ -46,7 +46,7 @@ public class GteScoreRerankModel implements ScoringModel {
                 .getFirst().getRelevanceScore());
     }
 
-    private static HttpRequest buildHttpRequest(List<String> textList, String query) {
+    private HttpRequest buildHttpRequest(List<String> textList, String query) {
         RerankRequest.InputData inputData = RerankRequest.InputData.builder()
                 .query(query)
                 .documents(textList)
