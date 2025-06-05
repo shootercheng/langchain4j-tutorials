@@ -2,6 +2,7 @@ package org.scd.day08.reranke;
 
 import com.alibaba.fastjson.JSON;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.http.client.HttpClient;
 import dev.langchain4j.http.client.HttpMethod;
 import dev.langchain4j.http.client.HttpRequest;
 import dev.langchain4j.http.client.SuccessfulHttpResponse;
@@ -10,6 +11,7 @@ import dev.langchain4j.http.client.jdk.JdkHttpClientBuilder;
 import dev.langchain4j.http.client.log.LoggingHttpClient;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.scoring.ScoringModel;
+import lombok.Builder;
 import org.scd.day08.param.RerankRequest;
 import org.scd.day08.param.RerankResponse;
 
@@ -23,24 +25,61 @@ import static org.scd.common.Constant.MODEL_CONFIG_PATH;
 import static org.scd.common.Utils.loadPropertiesByPath;
 
 public class GteScoreRerankModel implements ScoringModel {
-    public static Properties properties;
+    private HttpClient httpClient;
 
-    static {
-        properties = loadPropertiesByPath(MODEL_CONFIG_PATH);
+    private String scoreUrl;
+
+    private String apiKey;
+
+    private String modelName;
+
+    public GteScoreRerankModel(HttpClient httpClient, String scoreUrl, String apiKey, String modelName) {
+        this.httpClient = httpClient;
+        this.scoreUrl = scoreUrl;
+        this.apiKey = apiKey;
+        this.modelName = modelName;
     }
 
-    private final JdkHttpClient jdkHttpClient = new JdkHttpClientBuilder()
-            .connectTimeout(Duration.ofMinutes(1))
-            .readTimeout(Duration.ofMinutes(1))
-            .build();
+    public static GteScoreRerankModelBuilder builder() {
+        return new GteScoreRerankModelBuilder();
+    }
 
-    private final LoggingHttpClient loggingHttpClient = new LoggingHttpClient(jdkHttpClient,
-            true, true);
+    public static class GteScoreRerankModelBuilder {
+        private HttpClient httpClient;
+        private String scoreUrl;
+        private String apiKey;
+        private String modelName;
+
+        public GteScoreRerankModelBuilder httpClient(HttpClient httpClient) {
+            this.httpClient = httpClient;
+            return this;
+        }
+
+        public GteScoreRerankModelBuilder scoreUrl(String scoreUrl) {
+            this.scoreUrl = scoreUrl;
+            return this;
+        }
+
+        public GteScoreRerankModelBuilder apiKey(String apiKey) {
+            this.apiKey = apiKey;
+            return this;
+        }
+
+        public GteScoreRerankModelBuilder modelName(String modelName) {
+            this.modelName = modelName;
+            return this;
+        }
+
+        public GteScoreRerankModel build() {
+            return new GteScoreRerankModel(httpClient, scoreUrl, apiKey, modelName);
+        }
+
+    }
 
     @Override
     public Response<Double> score(String text, String query) {
         HttpRequest httpRequest = buildHttpRequest(Collections.singletonList(text), query);
-        SuccessfulHttpResponse successfulHttpResponse = loggingHttpClient.execute(httpRequest);
+        SuccessfulHttpResponse successfulHttpResponse = httpClient.execute(httpRequest);
         RerankResponse rerankResponse = JSON.parseObject(successfulHttpResponse.body(), RerankResponse.class);
         return new Response<>(rerankResponse.getOutput().getResults()
                 .getFirst().getRelevanceScore());
@@ -52,14 +91,14 @@ public class GteScoreRerankModel implements ScoringModel {
                 .documents(textList)
                 .build();
         RerankRequest rerankRequest = RerankRequest.builder()
-                .model("gte-rerank-v2")
+                .model(modelName)
                 .input(inputData)
                 .build();
         return HttpRequest.builder()
-                .url(properties.getProperty("scoreUrl"))
+                .url(scoreUrl)
                 .method(HttpMethod.POST)
                 .addHeader("Authorization",
-                        "Bearer " + properties.getProperty("apiKey"))
+                        "Bearer " + apiKey)
                 .addHeader("Content-Type", "application/json")
                 .body(JSON.toJSONString(rerankRequest))
                 .build();
@@ -75,7 +114,7 @@ public class GteScoreRerankModel implements ScoringModel {
         List<String> textList = segments.stream().map(TextSegment::text)
                 .collect(Collectors.toList());
         HttpRequest httpRequest = buildHttpRequest(textList, query);
-        SuccessfulHttpResponse successfulHttpResponse = loggingHttpClient.execute(httpRequest);
+        SuccessfulHttpResponse successfulHttpResponse = httpClient.execute(httpRequest);
         RerankResponse rerankResponse = JSON.parseObject(successfulHttpResponse.body(), RerankResponse.class);
         List<Double> doubles = rerankResponse.getOutput().getResults().stream()
                 .sorted(RerankResponse.Result::getIndex).map(RerankResponse.Result::getRelevanceScore)
