@@ -12,6 +12,9 @@ import java.util.Map;
 public class QianfanSearchParam {
     private List<Message> messages;
 
+    @JSONField(name = "resource_type_filter")
+    private List<Map<String, Object>> resourceTypeFilter;
+
     @JSONField(name = "search_filter")
     private SearchFilter searchFilter;
 

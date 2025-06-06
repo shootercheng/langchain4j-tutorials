@@ -1,5 +1,7 @@
 package org.scd.common;
 
+import dev.langchain4j.service.Result;
+
 /**
  * This is an "AI Service". It is a Java service with AI capabilities/features.
  * It can be integrated into your code like any other service, acting as a bean, and can be mocked for testing.
@@ -17,4 +19,6 @@ package org.scd.common;
 public interface Assistant {
 
     String answer(String query);
+
+    Result<String> answerWithSource(String query);
 }

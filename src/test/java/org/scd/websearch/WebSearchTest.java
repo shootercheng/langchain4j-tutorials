@@ -4,6 +4,7 @@ import dev.langchain4j.http.client.jdk.JdkHttpClient;
 import dev.langchain4j.http.client.jdk.JdkHttpClientBuilder;
 import dev.langchain4j.http.client.log.LoggingHttpClient;
 import dev.langchain4j.web.search.WebSearchEngine;
+import dev.langchain4j.web.search.WebSearchRequest;
 import dev.langchain4j.web.search.WebSearchResults;
 import org.junit.Test;
 import org.scd.day11.websearch.BaiduQianfanSearchEngine;
@@ -40,7 +41,11 @@ public class WebSearchTest {
                 properties.getProperty("searchUrl"),
                 properties.getProperty("baiduApiKey")
                 );
-        WebSearchResults webSearchResults = baiduQianfanSearchEngine.search("什么是联网搜索");
+        WebSearchRequest webSearchRequest = WebSearchRequest.builder()
+                .searchTerms("什么是联网搜索")
+                .maxResults(5)
+                .build();
+        WebSearchResults webSearchResults = baiduQianfanSearchEngine.search(webSearchRequest);
         LOGGER.info("web search result {}", webSearchResults);
     }
 }

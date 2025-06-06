@@ -12,9 +12,7 @@ import org.scd.day11.websearch.param.QianfanSearchParam;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 public class BaiduQianfanSearchEngine implements WebSearchEngine {
@@ -37,8 +35,13 @@ public class BaiduQianfanSearchEngine implements WebSearchEngine {
                 .role("user")
                 .content(webSearchRequest.searchTerms())
                 .build();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("type", "web");
+        paramMap.put("top_k", webSearchRequest.maxResults() != null ?
+                webSearchRequest.maxResults() : 10);
         QianfanSearchParam qianfanSearchParam = QianfanSearchParam.builder()
                 .messages(Collections.singletonList(message))
+                .resourceTypeFilter(List.of(paramMap))
                 .build();
         HttpRequest httpRequest = HttpRequest.builder()
                 .url(searchUrl)
