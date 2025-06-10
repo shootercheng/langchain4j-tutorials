@@ -41,3 +41,4 @@ build/
 *.duck
 *.wal
 *.db
+onnx
