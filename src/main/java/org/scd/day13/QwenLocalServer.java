@@ -9,6 +9,7 @@ import dev.langchain4j.http.client.jdk.JdkHttpClientBuilder;
 import dev.langchain4j.http.client.log.LoggingHttpClient;
 import lombok.extern.slf4j.Slf4j;
 import org.scd.day13.param.QwenEmbeddingParam;
+import org.scd.day13.param.QwenEmbeddingResult;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -34,5 +35,8 @@ public class QwenLocalServer {
                 .build();
         SuccessfulHttpResponse successfulHttpResponse = loggingHttpClient.execute(httpRequest);
         log.info("result {}", successfulHttpResponse.body());
+        QwenEmbeddingResult qwenEmbeddingResult = JSON.parseObject(successfulHttpResponse.body(),
+                QwenEmbeddingResult.class);
+        log.info("embed success {}", qwenEmbeddingResult.embedSuccess());
     }
 }
