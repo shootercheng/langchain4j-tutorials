@@ -24,10 +24,14 @@ model = SentenceTransformer(model_name_or_path="D:\modelscope\models\Qwen\Qwen3-
 
 @app.route('/embed', methods=['POST'])
 def get_embedding():
-    text = request.json['text']
-    document_embeddings = model.encode(text)
-    arr_list = document_embeddings.tolist()
-    return jsonify({"embedding": arr_list})
+    try:
+        text = request.json['text']
+        document_embeddings = model.encode(text)
+        arr_list = document_embeddings.tolist()
+        return jsonify({"code":"0000", "data": arr_list, "msg": "OK"})
+    except Exception as e:
+        logging.exception("处理异常")
+        return jsonify({"code":"1111", "data": [], "msg": str(e)})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
